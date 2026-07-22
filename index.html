@@ -34,7 +34,6 @@
             max-height: 800px;
             position: relative;
         }
-        /* Шапка */
         .header {
             display: flex;
             justify-content: space-between;
@@ -65,7 +64,6 @@
         }
         .header-icons span:hover { opacity: 1; }
 
-        /* Баланс */
         .balance-widget {
             margin: 12px 16px;
             padding: 12px 16px;
@@ -82,7 +80,6 @@
         .balance-label { font-size: 14px; color: #aaa; }
         .balance-amount { font-size: 20px; font-weight: bold; color: #00f0ff; }
 
-        /* Поиск */
         .search-bar {
             margin: 0 16px 12px;
             background: #1a1a2e;
@@ -103,7 +100,6 @@
         }
         .search-bar input::placeholder { color: #666; }
 
-        /* Переключатель */
         .view-toggle {
             display: flex;
             margin: 0 16px 12px;
@@ -129,7 +125,6 @@
             box-shadow: 0 0 10px #00f0ff33;
         }
 
-        /* Контент */
         .content {
             flex: 1;
             overflow-y: auto;
@@ -165,7 +160,6 @@
         .status-closed { color: #ff4c4c; }
         .club-price { font-size: 14px; color: #00f0ff; margin-top: 8px; font-weight: 500; }
 
-        /* Нижняя навигация */
         .bottom-nav {
             position: absolute;
             bottom: 0;
@@ -190,15 +184,19 @@
         .nav-item.active { color: #00f0ff; }
         .nav-item span { font-size: 20px; margin-bottom: 2px; }
 
-        /* Скроллбар */
         .content::-webkit-scrollbar { width: 4px; }
         .content::-webkit-scrollbar-track { background: transparent; }
         .content::-webkit-scrollbar-thumb { background: #2a2a4a; border-radius: 2px; }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Шапка -->
         <div class="header">
             <div class="logo">DSAM</div>
             <div class="header-icons">
@@ -208,7 +206,6 @@
             </div>
         </div>
 
-        <!-- Баланс -->
         <div class="balance-widget" onclick="alert('История бонусов')">
             <div>
                 <div class="balance-label">💰 Бонусный баланс</div>
@@ -217,64 +214,23 @@
             <span style="font-size:20px;">›</span>
         </div>
 
-        <!-- Поиск -->
         <div class="search-bar">
             <span>🔍</span>
             <input type="text" placeholder="Поиск клуба...">
         </div>
 
-        <!-- Переключатель карта/список -->
         <div class="view-toggle">
             <button id="btnMap" onclick="switchView('map')">📍 Карта</button>
             <button id="btnList" class="active" onclick="switchView('list')">📋 Список</button>
         </div>
 
-        <!-- Контент -->
         <div class="content">
-            <!-- Карта-заглушка -->
             <div id="mapView" class="map-placeholder">🗺️ Карта клубов (будет позже)</div>
-
-            <!-- Список клубов -->
-            <div id="listView" class="club-list">
-                <!-- Клуб 1 -->
-                <div class="club-card" onclick="alert('Переход в карточку клуба')">
-                    <div class="club-header">
-                        <div class="club-name">CyberZone</div>
-                        <div class="club-rating">⭐ 4.8</div>
-                    </div>
-                    <div class="club-address">📍 1.2 км, ул. Амира Темура, 45</div>
-                    <div class="club-status"><span class="status-open">🟢 Открыто</span> · 09:00–02:00</div>
-                    <div style="font-size:13px; color:#aaa;">🟢 8 из 20 компьютеров свободно</div>
-                    <div class="club-price">от 25 000 сум/час (VIP)</div>
-                </div>
-
-                <!-- Клуб 2 -->
-                <div class="club-card" onclick="alert('Переход в карточку клуба')">
-                    <div class="club-header">
-                        <div class="club-name">Game O'Clock</div>
-                        <div class="club-rating">⭐ 4.5</div>
-                    </div>
-                    <div class="club-address">📍 2.5 км, Чиланзар, 12-й квартал</div>
-                    <div class="club-status"><span class="status-open">🟡 Скоро закрытие</span> · до 23:00</div>
-                    <div style="font-size:13px; color:#aaa;">🟡 2 из 15 свободно</div>
-                    <div class="club-price">от 15 000 сум/час (Стандарт)</div>
-                </div>
-
-                <!-- Клуб 3 (закрыт) -->
-                <div class="club-card" style="opacity:0.7;">
-                    <div class="club-header">
-                        <div class="club-name">Flashback</div>
-                        <div class="club-rating">⭐ 4.2</div>
-                    </div>
-                    <div class="club-address">📍 3.1 км, Юнусабад, 5-й квартал</div>
-                    <div class="club-status"><span class="status-closed">🔴 Закрыто</span> · откроется в 10:00</div>
-                    <div style="font-size:13px; color:#aaa;">Бронирование недоступно</div>
-                    <div class="club-price" style="color:#666;">от 20 000 сум/час</div>
-                </div>
+            <div id="clubsContainer" class="club-list">
+                <div class="loading">🔄 Загрузка клубов...</div>
             </div>
         </div>
 
-        <!-- Нижняя навигация -->
         <div class="bottom-nav">
             <div class="nav-item active">
                 <span>🏠</span>
@@ -296,14 +252,63 @@
     </div>
 
     <script>
+        const API_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQ3bCWSI0pgPEM7JMSo4KUTZcXwuzlT5YtYeiz4NLuRcoRXwlP79Xj7bzTOKXFQg6GdWjWizW3hQTrySB4J_7FCGMHWJkSBcKUwsNc_hkdvspONouWl4I0he8mWqFjVKttvyl7-XrCG40D_1JfTJ9CoCdKFtlQ7NmITyhAb-Q5vB53qv41X0lA2p_waiN8eWOjc6eA9dhKA04RJrjDhHyoPOIowLfLV5Cv7k_yxfJJo-v3ictbwvcLfalu_odb0iopjPEjIT0FosuK5XKkOsauqZ3AEDQ&lib=MnId7Z2KSH7_de3LWClVoNVt4bZrWZUMy';
+
         function switchView(view) {
             document.getElementById('mapView').style.display = view === 'map' ? 'flex' : 'none';
-            document.getElementById('listView').style.display = view === 'list' ? 'flex' : 'none';
+            document.getElementById('clubsContainer').style.display = view === 'list' ? 'flex' : 'none';
             document.getElementById('btnMap').classList.toggle('active', view === 'map');
             document.getElementById('btnList').classList.toggle('active', view === 'list');
         }
-        // Инициализация: список активен
+
+        async function loadClubs() {
+            const container = document.getElementById('clubsContainer');
+            try {
+                const response = await fetch(API_URL);
+                const clubs = await response.json();
+                renderClubs(clubs);
+            } catch (err) {
+                console.error('Ошибка загрузки:', err);
+                container.innerHTML = '<div class="loading">❌ Не удалось загрузить клубы</div>';
+            }
+        }
+
+        function renderClubs(clubs) {
+            const container = document.getElementById('clubsContainer');
+            
+            if (clubs.length === 0) {
+                container.innerHTML = '<div class="loading">😕 Клубы пока не добавлены</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            clubs.forEach(club => {
+                const statusClass = club.freeNow > 0 ? 'status-open' : 'status-closed';
+                const statusEmoji = club.freeNow > 0 ? '🟢' : '🔴';
+                const statusText = club.freeNow > 0 ? 'Открыто' : 'Нет свободных';
+                const freeText = club.total > 0 ? `${club.freeNow} из ${club.total} свободно` : 'Нет данных';
+
+                const card = document.createElement('div');
+                card.className = 'club-card';
+                card.onclick = () => alert(`Открыть клуб: ${club.name}\n(скоро сделаем страницу клуба)`);
+                card.innerHTML = `
+                    <div class="club-header">
+                        <div class="club-name">${club.name}</div>
+                        <div class="club-rating">⭐ ${club.rating.toFixed(1)}</div>
+                    </div>
+                    <div class="club-address">📍 ${club.address}</div>
+                    <div class="club-status">
+                        <span class="${statusClass}">${statusEmoji} ${statusText}</span>
+                    </div>
+                    <div style="font-size:13px; color:#aaa;">${statusEmoji} ${freeText}</div>
+                    <div class="club-price">от ${club.minPrice.toLocaleString()} сум/час</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
         document.getElementById('mapView').style.display = 'none';
+        loadClubs();
     </script>
 </body>
 </html>
