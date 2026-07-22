@@ -34,6 +34,8 @@
             max-height: 800px;
             position: relative;
         }
+
+        /* Шапка */
         .header {
             display: flex;
             justify-content: space-between;
@@ -42,6 +44,19 @@
             background: rgba(15, 15, 23, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid #1f1f2e;
+            min-height: 56px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .back-btn {
+            display: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #00f0ff;
+            padding: 4px;
         }
         .logo {
             font-size: 24px;
@@ -51,6 +66,11 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        .screen-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: none;
         }
         .header-icons {
             display: flex;
@@ -64,8 +84,16 @@
         }
         .header-icons span:hover { opacity: 1; }
 
+        /* Контент */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 16px 80px;
+        }
+
+        /* Баланс */
         .balance-widget {
-            margin: 12px 16px;
+            margin: 12px 0;
             padding: 12px 16px;
             background: linear-gradient(135deg, #1a1a2e, #16213e);
             border-radius: 16px;
@@ -80,8 +108,9 @@
         .balance-label { font-size: 14px; color: #aaa; }
         .balance-amount { font-size: 20px; font-weight: bold; color: #00f0ff; }
 
+        /* Поиск */
         .search-bar {
-            margin: 0 16px 12px;
+            margin: 0 0 12px;
             background: #1a1a2e;
             border-radius: 12px;
             padding: 10px 16px;
@@ -100,9 +129,10 @@
         }
         .search-bar input::placeholder { color: #666; }
 
+        /* Переключатель */
         .view-toggle {
             display: flex;
-            margin: 0 16px 12px;
+            margin: 0 0 12px;
             background: #1a1a2e;
             border-radius: 10px;
             padding: 4px;
@@ -125,23 +155,8 @@
             box-shadow: 0 0 10px #00f0ff33;
         }
 
-        .content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 16px 80px;
-        }
-        .map-placeholder {
-            display: none;
-            height: 200px;
-            background: #1a1a2e;
-            border-radius: 16px;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            margin-bottom: 16px;
-        }
+        /* Карточки клубов */
         .club-list { display: flex; flex-direction: column; gap: 12px; }
-
         .club-card {
             background: #12121f;
             border-radius: 16px;
@@ -160,6 +175,87 @@
         .status-closed { color: #ff4c4c; }
         .club-price { font-size: 14px; color: #00f0ff; margin-top: 8px; font-weight: 500; }
 
+        /* Карточка клуба (детали) */
+        .club-detail-photo {
+            width: 100%;
+            height: 180px;
+            background: #1a1a2e;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 48px;
+        }
+        .club-detail-info {
+            background: #12121f;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #1f1f2e;
+            margin-bottom: 12px;
+        }
+        .club-detail-info div {
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .hall-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+        }
+        .hall-tab {
+            padding: 8px 16px;
+            background: #1a1a2e;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+        .hall-tab.active {
+            border-color: #00f0ff;
+            color: #00f0ff;
+            background: #00f0ff11;
+        }
+        .hall-detail {
+            background: #12121f;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #1f1f2e;
+            margin-bottom: 12px;
+        }
+        .hall-detail h4 { margin-bottom: 8px; }
+        .hall-specs { font-size: 13px; color: #aaa; margin-bottom: 4px; }
+        .package-list { margin-top: 12px; }
+        .package-item {
+            background: #1a1a2e;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn-book {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00f0ff, #b300ff);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: 0.2s;
+        }
+        .btn-book:hover { opacity: 0.9; }
+
+        /* Нижняя навигация */
         .bottom-nav {
             position: absolute;
             bottom: 0;
@@ -184,21 +280,43 @@
         .nav-item.active { color: #00f0ff; }
         .nav-item span { font-size: 20px; margin-bottom: 2px; }
 
-        .content::-webkit-scrollbar { width: 4px; }
-        .content::-webkit-scrollbar-track { background: transparent; }
-        .content::-webkit-scrollbar-thumb { background: #2a2a4a; border-radius: 2px; }
-
+        /* Утилиты */
         .loading {
             text-align: center;
             padding: 40px;
             color: #666;
         }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        .map-placeholder {
+            display: none;
+            height: 200px;
+            background: #1a1a2e;
+            border-radius: 16px;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .content::-webkit-scrollbar { width: 4px; }
+        .content::-webkit-scrollbar-track { background: transparent; }
+        .content::-webkit-scrollbar-thumb { background: #2a2a4a; border-radius: 2px; }
     </style>
 </head>
 <body>
     <div class="app-container">
+        <!-- Шапка -->
         <div class="header">
-            <div class="logo">DSAM</div>
+            <div class="header-left">
+                <span class="back-btn" id="backBtn" onclick="goBack()">←</span>
+                <span class="logo" id="headerLogo">DSAM</span>
+                <span class="screen-title" id="screenTitle"></span>
+            </div>
             <div class="header-icons">
                 <span>🔔</span>
                 <span>⚙️</span>
@@ -206,45 +324,60 @@
             </div>
         </div>
 
-        <div class="balance-widget" onclick="alert('История бонусов')">
-            <div>
-                <div class="balance-label">💰 Бонусный баланс</div>
-                <div class="balance-amount">12 500 бонусов</div>
+        <!-- Контент -->
+        <div class="content" id="contentArea">
+            <!-- ЭКРАН: Главная -->
+            <div id="screen-home" class="screen active">
+                <div class="balance-widget" onclick="alert('История бонусов')">
+                    <div>
+                        <div class="balance-label">💰 Бонусный баланс</div>
+                        <div class="balance-amount">12 500 бонусов</div>
+                    </div>
+                    <span style="font-size:20px;">›</span>
+                </div>
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Поиск клуба...">
+                </div>
+                <div class="view-toggle">
+                    <button id="btnMap" onclick="switchView('map')">📍 Карта</button>
+                    <button id="btnList" class="active" onclick="switchView('list')">📋 Список</button>
+                </div>
+                <div id="mapView" class="map-placeholder">🗺️ Карта клубов (будет позже)</div>
+                <div id="clubsContainer" class="club-list">
+                    <div class="loading">🔄 Загрузка клубов...</div>
+                </div>
             </div>
-            <span style="font-size:20px;">›</span>
-        </div>
 
-        <div class="search-bar">
-            <span>🔍</span>
-            <input type="text" placeholder="Поиск клуба...">
-        </div>
+            <!-- ЭКРАН: Карточка клуба -->
+            <div id="screen-club" class="screen">
+                <div id="clubDetailContent">
+                    <div class="loading">🔄 Загрузка...</div>
+                </div>
+            </div>
 
-        <div class="view-toggle">
-            <button id="btnMap" onclick="switchView('map')">📍 Карта</button>
-            <button id="btnList" class="active" onclick="switchView('list')">📋 Список</button>
-        </div>
+            <!-- ЭКРАН: Бронирования -->
+            <div id="screen-bookings" class="screen">
+                <div class="loading">📅 Мои брони (скоро)</div>
+            </div>
 
-        <div class="content">
-            <div id="mapView" class="map-placeholder">🗺️ Карта клубов (будет позже)</div>
-            <div id="clubsContainer" class="club-list">
-                <div class="loading">🔄 Загрузка клубов...</div>
+            <!-- ЭКРАН: Профиль -->
+            <div id="screen-profile" class="screen">
+                <div class="loading">👤 Профиль (скоро)</div>
             </div>
         </div>
 
-        <div class="bottom-nav">
-            <div class="nav-item active">
+        <!-- Нижняя навигация -->
+        <div class="bottom-nav" id="bottomNav">
+            <div class="nav-item active" data-screen="home" onclick="navigateTo('home')">
                 <span>🏠</span>
                 Главная
             </div>
-            <div class="nav-item">
-                <span>🔍</span>
-                Поиск
-            </div>
-            <div class="nav-item">
+            <div class="nav-item" data-screen="bookings" onclick="navigateTo('bookings')">
                 <span>📅</span>
                 Брони
             </div>
-            <div class="nav-item">
+            <div class="nav-item" data-screen="profile" onclick="navigateTo('profile')">
                 <span>👤</span>
                 Профиль
             </div>
@@ -252,8 +385,68 @@
     </div>
 
     <script>
-        const API_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQ3bCWSI0pgPEM7JMSo4KUTZcXwuzlT5YtYeiz4NLuRcoRXwlP79Xj7bzTOKXFQg6GdWjWizW3hQTrySB4J_7FCGMHWJkSBcKUwsNc_hkdvspONouWl4I0he8mWqFjVKttvyl7-XrCG40D_1JfTJ9CoCdKFtlQ7NmITyhAb-Q5vB53qv41X0lA2p_waiN8eWOjc6eA9dhKA04RJrjDhHyoPOIowLfLV5Cv7k_yxfJJo-v3ictbwvcLfalu_odb0iopjPEjIT0FosuK5XKkOsauqZ3AEDQ&lib=MnId7Z2KSH7_de3LWClVoNVt4bZrWZUMy';
+        // ==================== API ====================
+        const API_BASE = 'https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQ3bCWSI0pgPEM7JMSo4KUTZcXwuzlT5YtYeiz4NLuRcoRXwlP79Xj7bzTOKXFQg6GdWjWizW3hQTrySB4J_7FCGMHWJkSBcKUwsNc_hkdvspONouWl4I0he8mWqFjVKttvyl7-XrCG40D_1JfTJ9CoCdKFtlQ7NmITyhAb-Q5vB53qv41X0lA2p_waiN8eWOjc6eA9dhKA04RJrjDhHyoPOIowLfLV5Cv7k_yxfJJo-v3ictbwvcLfalu_odb0iopjPEjIT0FosuK5XKkOsauqZ3AEDQ&lib=MnId7Z2KSH7_de3LWClVoNVt4bZrWZUMy';
 
+        // ==================== НАВИГАЦИЯ ====================
+        let currentScreen = 'home';
+        let screenHistory = ['home'];
+        let currentClubId = null;
+
+        function navigateTo(screen, clubId = null) {
+            // Скрыть все экраны
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            // Показать нужный
+            document.getElementById('screen-' + screen).classList.add('active');
+
+            // Обновить историю
+            if (screen !== currentScreen) {
+                screenHistory.push(screen);
+                currentScreen = screen;
+            }
+
+            // Обновить шапку
+            const backBtn = document.getElementById('backBtn');
+            const logo = document.getElementById('headerLogo');
+            const title = document.getElementById('screenTitle');
+
+            if (screen === 'home') {
+                backBtn.style.display = 'none';
+                logo.style.display = 'inline';
+                title.style.display = 'none';
+                document.getElementById('bottomNav').style.display = 'flex';
+                screenHistory = ['home'];
+            } else {
+                backBtn.style.display = 'inline';
+                logo.style.display = 'none';
+                title.style.display = 'inline';
+                document.getElementById('bottomNav').style.display = 'none';
+            }
+
+            // Обновить нижнюю навигацию
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.screen === screen);
+            });
+
+            // Загрузить данные для экрана
+            if (screen === 'club' && clubId) {
+                currentClubId = clubId;
+                title.textContent = 'Загрузка...';
+                loadClubDetail(clubId);
+            } else if (screen === 'home') {
+                loadClubs();
+            }
+        }
+
+        function goBack() {
+            if (screenHistory.length > 1) {
+                screenHistory.pop();
+                const prevScreen = screenHistory[screenHistory.length - 1];
+                navigateTo(prevScreen);
+            }
+        }
+
+        // ==================== ПЕРЕКЛЮЧАТЕЛЬ КАРТА/СПИСОК ====================
         function switchView(view) {
             document.getElementById('mapView').style.display = view === 'map' ? 'flex' : 'none';
             document.getElementById('clubsContainer').style.display = view === 'list' ? 'flex' : 'none';
@@ -261,10 +454,12 @@
             document.getElementById('btnList').classList.toggle('active', view === 'list');
         }
 
+        // ==================== ЗАГРУЗКА КЛУБОВ ====================
         async function loadClubs() {
             const container = document.getElementById('clubsContainer');
+            container.innerHTML = '<div class="loading">🔄 Загрузка клубов...</div>';
             try {
-                const response = await fetch(API_URL);
+                const response = await fetch(API_BASE);
                 const clubs = await response.json();
                 renderClubs(clubs);
             } catch (err) {
@@ -275,12 +470,10 @@
 
         function renderClubs(clubs) {
             const container = document.getElementById('clubsContainer');
-            
             if (clubs.length === 0) {
                 container.innerHTML = '<div class="loading">😕 Клубы пока не добавлены</div>';
                 return;
             }
-
             container.innerHTML = '';
             clubs.forEach(club => {
                 const statusClass = club.freeNow > 0 ? 'status-open' : 'status-closed';
@@ -290,7 +483,7 @@
 
                 const card = document.createElement('div');
                 card.className = 'club-card';
-                card.onclick = () => alert(`Открыть клуб: ${club.name}\n(скоро сделаем страницу клуба)`);
+                card.onclick = () => navigateTo('club', club.id);
                 card.innerHTML = `
                     <div class="club-header">
                         <div class="club-name">${club.name}</div>
@@ -307,6 +500,77 @@
             });
         }
 
+        // ==================== ЗАГРУЗКА ДЕТАЛЕЙ КЛУБА ====================
+        async function loadClubDetail(clubId) {
+            const container = document.getElementById('clubDetailContent');
+            container.innerHTML = '<div class="loading">🔄 Загрузка...</div>';
+
+            try {
+                // Пока используем тот же API (позже сделаем отдельный эндпоинт)
+                const response = await fetch(API_BASE);
+                const clubs = await response.json();
+                const club = clubs.find(c => c.id === clubId);
+
+                if (!club) {
+                    container.innerHTML = '<div class="loading">❌ Клуб не найден</div>';
+                    return;
+                }
+
+                document.getElementById('screenTitle').textContent = club.name;
+                renderClubDetail(club);
+            } catch (err) {
+                console.error('Ошибка:', err);
+                container.innerHTML = '<div class="loading">❌ Ошибка загрузки</div>';
+            }
+        }
+
+        function renderClubDetail(club) {
+            const container = document.getElementById('clubDetailContent');
+
+            // Мок-данные для залов (позже загрузим из API)
+            const halls = [
+                { id: 1, name: 'VIP-зал', price: 25000, specs: 'RTX 4070, i7-13700K, 32 ГБ', free: 3, total: 10, packages: ['Ночь 23-07: 80 000 сум', '3 часа: 65 000 сум'] },
+                { id: 2, name: 'Стандартный зал', price: 15000, specs: 'RTX 3060, i5-12400, 16 ГБ', free: 5, total: 10, packages: ['3 часа: 40 000 сум'] }
+            ];
+
+            let hallsHTML = halls.map((hall, i) => `
+                <div class="hall-tab ${i === 0 ? 'active' : ''}" onclick="switchHall(${i})">${hall.name}</div>
+            `).join('');
+
+            let hallDetailHTML = halls.map((hall, i) => `
+                <div class="hall-detail" id="hall-${i}" style="${i !== 0 ? 'display:none' : ''}">
+                    <h4>${hall.name}</h4>
+                    <div class="hall-specs">🖥 ${hall.specs}</div>
+                    <div style="color:#4cff4c; margin:8px 0;">🟢 Свободно: ${hall.free} из ${hall.total}</div>
+                    <div style="font-size:18px; font-weight:700; color:#00f0ff;">${hall.price.toLocaleString()} сум/час</div>
+                    ${hall.packages.length > 0 ? `
+                        <div class="package-list">
+                            ${hall.packages.map(p => `<div class="package-item"><span>🎮 ${p}</span><span>›</span></div>`).join('')}
+                        </div>
+                    ` : ''}
+                    <button class="btn-book" onclick="alert('Бронирование (скоро)')">💰 Забронировать</button>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="club-detail-photo">🖥️</div>
+                <div class="club-detail-info">
+                    <div>⭐ Рейтинг: ${club.rating.toFixed(1)}</div>
+                    <div>📍 ${club.address}</div>
+                    <div>🕐 09:00 – 02:00 (Открыто)</div>
+                    <div>📞 Позвонить</div>
+                </div>
+                <div class="hall-tabs">${hallsHTML}</div>
+                ${hallDetailHTML}
+            `;
+        }
+
+        function switchHall(index) {
+            document.querySelectorAll('.hall-tab').forEach((tab, i) => tab.classList.toggle('active', i === index));
+            document.querySelectorAll('.hall-detail').forEach((detail, i) => detail.style.display = i === index ? 'block' : 'none');
+        }
+
+        // ==================== СТАРТ ====================
         document.getElementById('mapView').style.display = 'none';
         loadClubs();
     </script>
