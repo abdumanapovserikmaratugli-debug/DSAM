@@ -187,6 +187,13 @@
             justify-content: center;
             color: #666;
             font-size: 48px;
+            overflow: hidden;
+        }
+        .club-detail-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
         }
         .club-detail-info {
             background: #12121f;
@@ -238,7 +245,10 @@
             font-size: 13px;
             display: flex;
             justify-content: space-between;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        .package-item:hover { background: #222240; }
         .btn-book {
             display: block;
             width: 100%;
@@ -337,7 +347,7 @@
                 </div>
                 <div class="search-bar">
                     <span>🔍</span>
-                    <input type="text" placeholder="Поиск клуба...">
+                    <input type="text" placeholder="Поиск клуба..." id="searchInput" oninput="filterClubs()">
                 </div>
                 <div class="view-toggle">
                     <button id="btnMap" onclick="switchView('map')">📍 Карта</button>
@@ -388,47 +398,44 @@
         // ==================== API ====================
         const API_BASE = 'https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQ3bCWSI0pgPEM7JMSo4KUTZcXwuzlT5YtYeiz4NLuRcoRXwlP79Xj7bzTOKXFQg6GdWjWizW3hQTrySB4J_7FCGMHWJkSBcKUwsNc_hkdvspONouWl4I0he8mWqFjVKttvyl7-XrCG40D_1JfTJ9CoCdKFtlQ7NmITyhAb-Q5vB53qv41X0lA2p_waiN8eWOjc6eA9dhKA04RJrjDhHyoPOIowLfLV5Cv7k_yxfJJo-v3ictbwvcLfalu_odb0iopjPEjIT0FosuK5XKkOsauqZ3AEDQ&lib=MnId7Z2KSH7_de3LWClVoNVt4bZrWZUMy';
 
-        // ==================== НАВИГАЦИЯ ====================
+        // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
         let currentScreen = 'home';
         let screenHistory = ['home'];
         let currentClubId = null;
+        let allClubs = []; // Кэш для поиска
 
+        // ==================== НАВИГАЦИЯ ====================
         function navigateTo(screen, clubId = null) {
-            // Скрыть все экраны
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            // Показать нужный
             document.getElementById('screen-' + screen).classList.add('active');
 
-            // Обновить историю
             if (screen !== currentScreen) {
                 screenHistory.push(screen);
                 currentScreen = screen;
             }
 
-            // Обновить шапку
             const backBtn = document.getElementById('backBtn');
             const logo = document.getElementById('headerLogo');
             const title = document.getElementById('screenTitle');
+            const bottomNav = document.getElementById('bottomNav');
 
             if (screen === 'home') {
                 backBtn.style.display = 'none';
                 logo.style.display = 'inline';
                 title.style.display = 'none';
-                document.getElementById('bottomNav').style.display = 'flex';
+                bottomNav.style.display = 'flex';
                 screenHistory = ['home'];
             } else {
                 backBtn.style.display = 'inline';
                 logo.style.display = 'none';
                 title.style.display = 'inline';
-                document.getElementById('bottomNav').style.display = 'none';
+                bottomNav.style.display = 'none';
             }
 
-            // Обновить нижнюю навигацию
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.screen === screen);
             });
 
-            // Загрузить данные для экрана
             if (screen === 'club' && clubId) {
                 currentClubId = clubId;
                 title.textContent = 'Загрузка...';
@@ -454,6 +461,16 @@
             document.getElementById('btnList').classList.toggle('active', view === 'list');
         }
 
+        // ==================== ПОИСК ====================
+        function filterClubs() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allClubs.filter(club =>
+                club.name.toLowerCase().includes(query) ||
+                club.address.toLowerCase().includes(query)
+            );
+            renderClubs(filtered);
+        }
+
         // ==================== ЗАГРУЗКА КЛУБОВ ====================
         async function loadClubs() {
             const container = document.getElementById('clubsContainer');
@@ -461,6 +478,7 @@
             try {
                 const response = await fetch(API_BASE);
                 const clubs = await response.json();
+                allClubs = clubs; // Кэшируем для поиска
                 renderClubs(clubs);
             } catch (err) {
                 console.error('Ошибка загрузки:', err);
@@ -471,7 +489,7 @@
         function renderClubs(clubs) {
             const container = document.getElementById('clubsContainer');
             if (clubs.length === 0) {
-                container.innerHTML = '<div class="loading">😕 Клубы пока не добавлены</div>';
+                container.innerHTML = '<div class="loading">😕 Клубы не найдены</div>';
                 return;
             }
             container.innerHTML = '';
@@ -506,12 +524,10 @@
             container.innerHTML = '<div class="loading">🔄 Загрузка...</div>';
 
             try {
-                // Пока используем тот же API (позже сделаем отдельный эндпоинт)
-                const response = await fetch(API_BASE);
-                const clubs = await response.json();
-                const club = clubs.find(c => c.id === clubId);
+                const response = await fetch(API_BASE + '?club_id=' + clubId);
+                const club = await response.json();
 
-                if (!club) {
+                if (club.error) {
                     container.innerHTML = '<div class="loading">❌ Клуб не найден</div>';
                     return;
                 }
@@ -527,38 +543,45 @@
         function renderClubDetail(club) {
             const container = document.getElementById('clubDetailContent');
 
-            // Мок-данные для залов (позже загрузим из API)
-            const halls = [
-                { id: 1, name: 'VIP-зал', price: 25000, specs: 'RTX 4070, i7-13700K, 32 ГБ', free: 3, total: 10, packages: ['Ночь 23-07: 80 000 сум', '3 часа: 65 000 сум'] },
-                { id: 2, name: 'Стандартный зал', price: 15000, specs: 'RTX 3060, i5-12400, 16 ГБ', free: 5, total: 10, packages: ['3 часа: 40 000 сум'] }
-            ];
-
-            let hallsHTML = halls.map((hall, i) => `
+            let hallsHTML = club.halls.map((hall, i) => `
                 <div class="hall-tab ${i === 0 ? 'active' : ''}" onclick="switchHall(${i})">${hall.name}</div>
             `).join('');
 
-            let hallDetailHTML = halls.map((hall, i) => `
+            let hallDetailHTML = club.halls.map((hall, i) => `
                 <div class="hall-detail" id="hall-${i}" style="${i !== 0 ? 'display:none' : ''}">
                     <h4>${hall.name}</h4>
                     <div class="hall-specs">🖥 ${hall.specs}</div>
-                    <div style="color:#4cff4c; margin:8px 0;">🟢 Свободно: ${hall.free} из ${hall.total}</div>
-                    <div style="font-size:18px; font-weight:700; color:#00f0ff;">${hall.price.toLocaleString()} сум/час</div>
+                    <div style="color:#4cff4c; margin:8px 0;">
+                        🟢 Свободно: ${hall.free_now} из ${hall.total_computers}
+                    </div>
+                    <div style="font-size:18px; font-weight:700; color:#00f0ff;">
+                        ${hall.base_price_hour.toLocaleString()} сум/час
+                    </div>
                     ${hall.packages.length > 0 ? `
                         <div class="package-list">
-                            ${hall.packages.map(p => `<div class="package-item"><span>🎮 ${p}</span><span>›</span></div>`).join('')}
+                            ${hall.packages.map(p => `
+                                <div class="package-item">
+                                    <span>🎮 ${p}</span>
+                                    <span>›</span>
+                                </div>
+                            `).join('')}
                         </div>
                     ` : ''}
-                    <button class="btn-book" onclick="alert('Бронирование (скоро)')">💰 Забронировать</button>
+                    <button class="btn-book" onclick="alert('Бронирование (скоро)')">
+                        💰 Забронировать
+                    </button>
                 </div>
             `).join('');
 
             container.innerHTML = `
-                <div class="club-detail-photo">🖥️</div>
+                <div class="club-detail-photo">
+                    ${club.photo_url ? `<img src="${club.photo_url}" alt="${club.name}">` : '🖥️'}
+                </div>
                 <div class="club-detail-info">
                     <div>⭐ Рейтинг: ${club.rating.toFixed(1)}</div>
                     <div>📍 ${club.address}</div>
-                    <div>🕐 09:00 – 02:00 (Открыто)</div>
-                    <div>📞 Позвонить</div>
+                    <div>🕐 ${club.working_hours || '09:00 – 02:00'}</div>
+                    <div>📞 ${club.phone || 'Нет данных'}</div>
                 </div>
                 <div class="hall-tabs">${hallsHTML}</div>
                 ${hallDetailHTML}
