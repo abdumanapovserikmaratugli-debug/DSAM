@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DSAM — Бронирование компьютеров</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <style>
         * {
             margin: 0;
@@ -608,7 +611,7 @@
                     <h2 id="authTitle">Регистрация</h2>
                     <p id="authSubtitle">Введите данные для бронирования</p>
                     <input type="text" class="auth-input" id="authName" placeholder="Ваше имя">
-                    <input type="tel" class="auth-input" id="authPhone" placeholder="+998 XX XXX XX XX">
+                    <input type="tel" class="auth-input" id="authPhone" placeholder="+998 XX XXX XX XX" oninput="formatPhoneInput(this)" maxlength="17">
                     <div class="auth-error" id="authError">Ошибка</div>
                     <button class="btn-book" onclick="handleAuth()" id="authBtn">Зарегистрироваться</button>
                     <div class="auth-switch" id="authSwitch">
@@ -650,11 +653,34 @@
         let allClubs = [];
         let currentPlayer = null;
         let authMode = 'register';
+        const BONUS_MAX_REDEEM_PERCENT = 50; // должно совпадать со значением в Code.gs
         let bookingState = {
             clubId: null, hallId: null, date: null, time: null,
             duration: 1, computerId: null, game: '',
-            pricePerHour: 0, totalPrice: 0, packageSelected: null
+            pricePerHour: 0, totalPrice: 0, packageSelected: null,
+            useBonus: false, bonusApplied: 0
         };
+        function toggleUseBonus() {
+            bookingState.useBonus = !bookingState.useBonus;
+            updateBookingSummary();
+        }
+
+        // Маска телефона: приводит ввод к формату +998 XX XXX XX XX
+        function formatPhoneInput(input) {
+            let digits = input.value.replace(/\D/g, '');
+            if (digits.startsWith('998')) digits = digits.slice(3);
+            digits = digits.slice(0, 9);
+            let formatted = '+998';
+            if (digits.length > 0) formatted += ' ' + digits.slice(0, 2);
+            if (digits.length > 2) formatted += ' ' + digits.slice(2, 5);
+            if (digits.length > 5) formatted += ' ' + digits.slice(5, 7);
+            if (digits.length > 7) formatted += ' ' + digits.slice(7, 9);
+            input.value = formatted;
+        }
+        function isValidUzPhone(phone) {
+            const digits = phone.replace(/\D/g, '');
+            return /^998\d{9}$/.test(digits);
+        }
 
         function checkAuth() {
             const saved = localStorage.getItem('dsam_player');
@@ -759,6 +785,7 @@
             const errEl = document.getElementById('authError');
             errEl.style.display = 'none';
             if (!phone) { errEl.textContent = 'Введите номер телефона'; errEl.style.display = 'block'; return; }
+            if (!isValidUzPhone(phone)) { errEl.textContent = 'Введите корректный номер: +998 XX XXX XX XX'; errEl.style.display = 'block'; return; }
             if (authMode === 'register' && !name) { errEl.textContent = 'Введите имя'; errEl.style.display = 'block'; return; }
             const btn = document.getElementById('authBtn');
             btn.textContent = 'Загрузка...'; btn.disabled = true;
@@ -886,6 +913,7 @@
             bookingState.date=dates[0]; bookingState.computers=comps;
             bookingState.pricePerHour=hall.base_price_hour||pricePerHour;
             bookingState.totalPrice=bookingState.pricePerHour;
+            bookingState.useBonus=false; bookingState.bonusApplied=0;
             renderBookingScreen(club,hall,dates,slots,comps);
         }
         function renderBookingScreen(club,hall,dates,slots,comps){
@@ -912,6 +940,13 @@
                     <div class="summary-row" id="summaryTime"><span>Время:</span><span>—</span></div>
                     <div class="summary-row" id="summaryDuration"><span>Длительность:</span><span>—</span></div>
                     <div class="summary-row" id="summaryComputer"><span>Компьютер:</span><span>—</span></div>
+                    ${currentPlayer && (currentPlayer.bonus_balance||0) > 0 ? `
+                    <div class="summary-row" id="bonusToggleRow" style="align-items:center;cursor:pointer;" onclick="toggleUseBonus()">
+                        <span>🎁 Списать бонусы (${(currentPlayer.bonus_balance||0).toLocaleString()} доступно)</span>
+                        <span id="bonusToggleState">Выкл</span>
+                    </div>
+                    <div class="summary-row" id="summaryBonusApplied" style="display:none;"><span>Скидка бонусами:</span><span>—</span></div>
+                    ` : ''}
                     <div class="summary-total" id="summaryTotal"><span>Итого:</span><span>${hall.base_price_hour.toLocaleString()} сум</span></div>
                 </div>
                 <button class="btn-book" id="btnPay" disabled onclick="processPayment()">💰 Оплатить через Click</button>
@@ -954,13 +989,31 @@
             const ts=bookingState.time||'—';
             const dur=bookingState.packageSelected||`${bookingState.duration} час(а)`;
             const cs=bookingState.computerId?`№${bookingState.computerId}`:'—';
-            const total=bookingState.totalPrice.toLocaleString()+' сум';
             const set=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v;};
             set('summaryDate',`<span>Дата:</span><span>${ds}</span>`);
             set('summaryTime',`<span>Время:</span><span>${ts}</span>`);
             set('summaryDuration',`<span>Длительность:</span><span>${dur}</span>`);
             set('summaryComputer',`<span>Компьютер:</span><span>${cs}</span>`);
-            set('summaryTotal',`<span>Итого:</span><span>${total}</span>`);
+
+            // Расчёт бонусов
+            const balance = currentPlayer ? (currentPlayer.bonus_balance||0) : 0;
+            const maxByPercent = Math.floor(bookingState.totalPrice * BONUS_MAX_REDEEM_PERCENT / 100);
+            bookingState.bonusApplied = bookingState.useBonus ? Math.min(balance, maxByPercent) : 0;
+
+            const toggleState = document.getElementById('bonusToggleState');
+            if (toggleState) toggleState.textContent = bookingState.useBonus ? 'Вкл' : 'Выкл';
+            const bonusRow = document.getElementById('summaryBonusApplied');
+            if (bonusRow) {
+                if (bookingState.bonusApplied > 0) {
+                    bonusRow.style.display = 'flex';
+                    bonusRow.innerHTML = `<span>Скидка бонусами:</span><span>−${bookingState.bonusApplied.toLocaleString()} сум</span>`;
+                } else {
+                    bonusRow.style.display = 'none';
+                }
+            }
+
+            const finalTotal = Math.max(0, bookingState.totalPrice - bookingState.bonusApplied);
+            set('summaryTotal',`<span>Итого:</span><span>${finalTotal.toLocaleString()} сум</span>`);
             const btn=document.getElementById('btnPay');
             if(btn)btn.disabled=!(bookingState.time&&bookingState.computerId);
         }
@@ -972,10 +1025,18 @@
                 const d=new Date(bookingState.date);
                 const [h,m]=(bookingState.time||'00:00').split(':');
                 d.setHours(parseInt(h),parseInt(m),0,0);
-                const url=API_BASE+'?action=create_booking&player_phone='+encodeURIComponent(currentPlayer.phone)+'&computer_id='+bookingState.computerId+'&start_time='+d.toISOString()+'&hours='+bookingState.duration+'&game='+encodeURIComponent(bookingState.game)+'&payment_method=click';
+                const bonusUsed = bookingState.bonusApplied || 0;
+                const url=API_BASE+'?action=create_booking&player_phone='+encodeURIComponent(currentPlayer.phone)+'&computer_id='+bookingState.computerId+'&start_time='+d.toISOString()+'&hours='+bookingState.duration+'&game='+encodeURIComponent(bookingState.game)+'&payment_method=click&bonus_used='+bonusUsed;
                 const r=await fetch(url);const data=await r.json();
                 if(data.success){
-                    document.getElementById('successDetails').textContent=`Бронь на ${d.toLocaleDateString('ru-RU')}, ${bookingState.time}, комп №${bookingState.computerId}\nСумма: ${bookingState.totalPrice.toLocaleString()} сум`;
+                    if (typeof data.new_bonus_balance === 'number') {
+                        currentPlayer.bonus_balance = data.new_bonus_balance;
+                        localStorage.setItem('dsam_player', JSON.stringify(currentPlayer));
+                        updateBalanceDisplay();
+                    }
+                    const finalTotal = Math.max(0, bookingState.totalPrice - bonusUsed);
+                    const bonusNote = data.bonus_earned ? `\n🎁 Начислено бонусов: +${data.bonus_earned.toLocaleString()}` : '';
+                    document.getElementById('successDetails').textContent=`Бронь на ${d.toLocaleDateString('ru-RU')}, ${bookingState.time}, комп №${bookingState.computerId}\nСумма: ${finalTotal.toLocaleString()} сум${bonusUsed?` (списано ${bonusUsed.toLocaleString()} бонусов)`:''}${bonusNote}`;
                     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
                     document.getElementById('screen-success').classList.add('active');
                     document.getElementById('backBtn').style.display='inline';
@@ -1025,6 +1086,13 @@
 
         document.getElementById('mapView').style.display='none';
         checkAuth();updateBalanceDisplay();loadClubs();
+
+        // Регистрация service worker — делает приложение устанавливаемым (PWA)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(e => console.log('SW registration failed:', e));
+            });
+        }
     </script>
 </body>
 </html>
