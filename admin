@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSAM Админка</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Segoe UI',sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;}
+        .container{max-width:900px;margin:0 auto;padding:20px;}
+        .header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #1f1f2e;margin-bottom:24px;}
+        .logo{font-size:24px;font-weight:900;background:linear-gradient(135deg,#00f0ff,#b300ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .club-selector{margin-bottom:20px;}
+        .club-selector select{padding:10px 16px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:10px;color:white;font-size:15px;width:100%;max-width:300px;}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-bottom:24px;}
+        .comp-card{background:#12121f;border-radius:12px;padding:12px;text-align:center;border:2px solid #1f1f2e;cursor:pointer;transition:0.2s;}
+        .comp-card.free{border-color:#4cff4c44;}
+        .comp-card.free:hover{border-color:#4cff4c;}
+        .comp-card.occupied{border-color:#ff4c4c44;background:#ff4c4c08;}
+        .comp-card.maintenance{border-color:#ffcc0044;opacity:0.6;}
+        .comp-card .num{font-size:24px;font-weight:700;}
+        .comp-card .hall{font-size:11px;color:#888;margin-top:4px;}
+        .comp-card .status{font-size:12px;margin-top:4px;}
+        .comp-card .status.free{color:#4cff4c;}
+        .comp-card .status.occupied{color:#ff4c4c;}
+        .comp-card .status.maintenance{color:#ffcc00;}
+        .comp-card .client{font-size:11px;color:#aaa;margin-top:2px;}
+        .section{background:#12121f;border-radius:16px;padding:20px;border:1px solid #1f1f2e;margin-bottom:16px;}
+        .section h2{margin-bottom:16px;font-size:18px;}
+        table{width:100%;border-collapse:collapse;}
+        th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #1f1f2e;font-size:14px;}
+        th{color:#888;font-weight:600;}
+        .btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:0.2s;}
+        .btn-cancel{background:#ff4c4c22;color:#ff4c4c;}
+        .btn-cancel:hover{background:#ff4c4c44;}
+        .btn-block{background:#ffcc0022;color:#ffcc00;}
+        .btn-block:hover{background:#ffcc0044;}
+        .btn-add{background:#00f0ff22;color:#00f0ff;width:100%;padding:12px;font-size:15px;}
+        .btn-add:hover{background:#00f0ff33;}
+        .login-box{max-width:400px;margin:100px auto;background:#12121f;border-radius:16px;padding:30px;border:1px solid #1f1f2e;text-align:center;}
+        .login-box input{padding:12px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px;color:white;width:100%;margin-bottom:12px;font-size:15px;}
+        .login-box .btn{width:100%;padding:14px;background:linear-gradient(135deg,#00f0ff,#b300ff);color:white;font-size:16px;}
+        .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:100;justify-content:center;align-items:center;}
+        .modal.active{display:flex;}
+        .modal-content{background:#12121f;border-radius:16px;padding:24px;border:1px solid #1f1f2e;max-width:400px;width:90%;}
+        .modal-content h3{margin-bottom:16px;}
+        .modal-content input{padding:10px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px;color:white;width:100%;margin-bottom:10px;font-size:14px;}
+        .modal-content .btn{margin-top:8px;}
+        .actions{display:flex;gap:8px;flex-wrap:wrap;}
+        .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#00f0ff22;color:#00f0ff;padding:12px 24px;border-radius:12px;font-weight:600;z-index:200;display:none;}
+        .toast.show{display:block;}
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- Экран входа -->
+        <div id="loginScreen">
+            <div class="login-box">
+                <div class="logo" style="margin-bottom:24px;">DSAM Admin</div>
+                <h3 style="margin-bottom:8px;">Вход для клубов</h3>
+                <select id="clubSelect" style="padding:12px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px;color:white;width:100%;margin-bottom:12px;font-size:15px;">
+                    <option value="">Выберите клуб...</option>
+                </select>
+                <input type="tel" id="adminPhone" placeholder="Номер телефона админа">
+                <button class="btn" onclick="login()">Войти</button>
+                <div style="color:#ff4c4c;margin-top:8px;display:none;" id="loginError"></div>
+            </div>
+        </div>
+
+        <!-- Основной экран -->
+        <div id="mainScreen" style="display:none;">
+            <div class="header">
+                <div class="logo">DSAM Admin</div>
+                <div>
+                    <span id="clubName" style="margin-right:16px;"></span>
+                    <button class="btn btn-cancel" onclick="logout()">Выйти</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💻 Компьютеры — <span id="currentDate"></span></h2>
+                <div class="grid" id="computersGrid"></div>
+            </div>
+
+            <div class="section">
+                <h2>📋 Брони на сегодня</h2>
+                <table>
+                    <thead><tr><th>Время</th><th>Комп</th><th>Зал</th><th>Клиент</th><th>Игра</th><th>Действия</th></tr></thead>
+                    <tbody id="bookingsTable"></tbody>
+                </table>
+                <button class="btn btn-add" style="margin-top:16px;" onclick="showAddModal()">➕ Добавить бронь вручную</button>
+            </div>
+        </div>
+
+        <!-- Модальное окно -->
+        <div class="modal" id="addModal">
+            <div class="modal-content">
+                <h3>Добавить бронь</h3>
+                <select id="modalComputer" style="padding:10px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px;color:white;width:100%;margin-bottom:10px;font-size:14px;"></select>
+                <input type="text" id="modalName" placeholder="Имя клиента">
+                <input type="tel" id="modalPhone" placeholder="Телефон (необязательно)">
+                <input type="datetime-local" id="modalStart" style="color-scheme:dark;">
+                <select id="modalHours" style="padding:10px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px;color:white;width:100%;margin-bottom:10px;font-size:14px;">
+                    <option value="1">1 час</option><option value="2">2 часа</option><option value="3">3 часа</option><option value="5">5 часов</option>
+                </select>
+                <input type="text" id="modalGame" placeholder="Игра (необязательно)">
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btn-add" onclick="addBooking()" style="flex:1;">✅ Добавить</button>
+                    <button class="btn btn-cancel" onclick="closeModal()" style="flex:1;">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://script.google.com/macros/s/AKfycbyKOuZ7iu77ZZYFQURDcw-v0E64xF_hwhi-JO8vI8fdz1EsBG2nDH_e4qnd0m97FrA/exec';
+        let currentClub = null;
+        let computers = [];
+        let bookings = [];
+
+        // Загрузка списка клубов для селекта
+        async function loadClubs() {
+            try {
+                const r = await fetch(API_BASE);
+                const clubs = await r.json();
+                const sel = document.getElementById('clubSelect');
+                clubs.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = c.name;
+                    sel.appendChild(opt);
+                });
+            } catch(e) { console.error(e); }
+        }
+
+        async function login() {
+            const clubId = document.getElementById('clubSelect').value;
+            const phone = document.getElementById('adminPhone').value.trim();
+            if (!clubId) { showError('Выберите клуб'); return; }
+            
+            try {
+                const r = await fetch(API_BASE + '?action=admin_login&phone=' + encodeURIComponent(phone) + '&club_id=' + clubId);
+                const data = await r.json();
+                if (data.success) {
+                    currentClub = data;
+                    localStorage.setItem('dsam_admin', JSON.stringify(data));
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('mainScreen').style.display = 'block';
+                    document.getElementById('clubName').textContent = data.club_name;
+                    loadDashboard();
+                } else {
+                    showError(data.error || 'Ошибка доступа');
+                }
+            } catch(e) { showError('Ошибка соединения'); }
+        }
+
+        function logout() {
+            localStorage.removeItem('dsam_admin');
+            currentClub = null;
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('mainScreen').style.display = 'none';
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('loginError');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        async function loadDashboard() {
+            if (!currentClub) return;
+            try {
+                const r = await fetch(API_BASE + '?action=admin_bookings&club_id=' + currentClub.club_id);
+                const data = await r.json();
+                computers = data.computers || [];
+                bookings = data.bookings || [];
+                renderComputers();
+                renderBookings();
+                document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ru-RU', { day:'numeric', month:'long', year:'numeric' });
+            } catch(e) { console.error(e); }
+        }
+
+        function renderComputers() {
+            const grid = document.getElementById('computersGrid');
+            grid.innerHTML = computers.map(c => {
+                let cls = 'free';
+                let statusText = 'Свободен';
+                if (c.status === 'maintenance') { cls = 'maintenance'; statusText = 'На ремонте'; }
+                else if (c.is_occupied) { cls = 'occupied'; statusText = 'Занят'; }
+                
+                const client = c.current_booking ? c.current_booking.client_name : '';
+                
+                return `
+                    <div class="comp-card ${cls}">
+                        <div class="num">${c.number}</div>
+                        <div class="hall">${c.hall_name}</div>
+                        <div class="status ${cls}">${statusText}</div>
+                        ${client ? `<div class="client">${client}</div>` : ''}
+                        <div class="actions" style="margin-top:8px;">
+                            ${c.status !== 'maintenance' ? 
+                                `<button class="btn btn-block" style="font-size:11px;padding:4px 8px;" onclick="blockComputer(${c.id})">🔧</button>` :
+                                `<button class="btn btn-add" style="font-size:11px;padding:4px 8px;" onclick="unblockComputer(${c.id})">✅</button>`
+                            }
+                            ${c.current_booking ? 
+                                `<button class="btn btn-cancel" style="font-size:11px;padding:4px 8px;" onclick="cancelBooking(${c.current_booking.id})">✕</button>` : ''
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderBookings() {
+            const tbody = document.getElementById('bookingsTable');
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;">Нет броней на сегодня</td></tr>';
+                return;
+            }
+            tbody.innerHTML = bookings
+                .sort((a,b) => new Date(a.start_time) - new Date(b.start_time))
+                .map(b => {
+                    const start = new Date(b.start_time);
+                    const end = new Date(b.end_time);
+                    const timeStr = start.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) + ' – ' + end.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+                    return `
+                        <tr>
+                            <td>${timeStr}</td>
+                            <td>№${b.computer_number}</td>
+                            <td>${b.hall_name}</td>
+                            <td>${b.client_name}</td>
+                            <td>${b.game||'—'}</td>
+                            <td><button class="btn btn-cancel" onclick="cancelBooking(${b.id})">Отменить</button></td>
+                        </tr>
+                    `;
+                }).join('');
+        }
+
+        async function cancelBooking(id) {
+            if (!confirm('Отменить бронь?')) return;
+            try {
+                const r = await fetch(API_BASE + '?action=admin_cancel_booking&booking_id=' + id);
+                const data = await r.json();
+                if (data.success) { showToast('Бронь отменена'); loadDashboard(); }
+            } catch(e) { showToast('Ошибка'); }
+        }
+
+        async function blockComputer(id) {
+            try {
+                const r = await fetch(API_BASE + '?action=admin_block_computer&computer_id=' + id + '&action_type=block');
+                const data = await r.json();
+                if (data.success) { showToast('Компьютер заблокирован'); loadDashboard(); }
+            } catch(e) { showToast('Ошибка'); }
+        }
+
+        async function unblockComputer(id) {
+            try {
+                const r = await fetch(API_BASE + '?action=admin_block_computer&computer_id=' + id + '&action_type=unblock');
+                const data = await r.json();
+                if (data.success) { showToast('Компьютер разблокирован'); loadDashboard(); }
+            } catch(e) { showToast('Ошибка'); }
+        }
+
+        function showAddModal() {
+            const modal = document.getElementById('addModal');
+            const sel = document.getElementById('modalComputer');
+            sel.innerHTML = computers.filter(c => c.status === 'active' && !c.is_occupied)
+                .map(c => `<option value="${c.id}">${c.hall_name} — Комп №${c.number}</option>`).join('');
+            
+            const now = new Date();
+            now.setMinutes(Math.ceil(now.getMinutes() / 30) * 30);
+            document.getElementById('modalStart').value = now.toISOString().slice(0,16);
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('active');
+        }
+
+        async function addBooking() {
+            const computerId = document.getElementById('modalComputer').value;
+            const name = document.getElementById('modalName').value.trim();
+            const phone = document.getElementById('modalPhone').value.trim();
+            const startTime = document.getElementById('modalStart').value;
+            const hours = document.getElementById('modalHours').value;
+            const game = document.getElementById('modalGame').value.trim();
+
+            if (!name) { showToast('Введите имя клиента'); return; }
+            if (!startTime) { showToast('Выберите время'); return; }
+
+            try {
+                const url = API_BASE + '?action=admin_create_booking&client_name=' + encodeURIComponent(name) +
+                    '&phone=' + encodeURIComponent(phone) + '&computer_id=' + computerId +
+                    '&start_time=' + new Date(startTime).toISOString() + '&hours=' + hours +
+                    '&game=' + encodeURIComponent(game);
+                const r = await fetch(url);
+                const data = await r.json();
+                if (data.success) {
+                    showToast('Бронь добавлена!');
+                    closeModal();
+                    loadDashboard();
+                }
+            } catch(e) { showToast('Ошибка'); }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        // Проверка сохранённой сессии
+        const saved = localStorage.getItem('dsam_admin');
+        if (saved) {
+            currentClub = JSON.parse(saved);
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainScreen').style.display = 'block';
+            document.getElementById('clubName').textContent = currentClub.club_name;
+            loadDashboard();
+        }
+
+        loadClubs();
+    </script>
+</body>
+</html>
