@@ -35,7 +35,6 @@
             position: relative;
         }
 
-        /* Шапка */
         .header {
             display: flex;
             justify-content: space-between;
@@ -84,14 +83,12 @@
         }
         .header-icons span:hover { opacity: 1; }
 
-        /* Контент */
         .content {
             flex: 1;
             overflow-y: auto;
             padding: 0 16px 80px;
         }
 
-        /* Баланс */
         .balance-widget {
             margin: 12px 0;
             padding: 12px 16px;
@@ -108,7 +105,6 @@
         .balance-label { font-size: 14px; color: #aaa; }
         .balance-amount { font-size: 20px; font-weight: bold; color: #00f0ff; }
 
-        /* Поиск */
         .search-bar {
             margin: 0 0 12px;
             background: #1a1a2e;
@@ -129,7 +125,6 @@
         }
         .search-bar input::placeholder { color: #666; }
 
-        /* Переключатель */
         .view-toggle {
             display: flex;
             margin: 0 0 12px;
@@ -155,7 +150,6 @@
             box-shadow: 0 0 10px #00f0ff33;
         }
 
-        /* Карточки клубов */
         .club-list { display: flex; flex-direction: column; gap: 12px; }
         .club-card {
             background: #12121f;
@@ -175,7 +169,6 @@
         .status-closed { color: #ff4c4c; }
         .club-price { font-size: 14px; color: #00f0ff; margin-top: 8px; font-weight: 500; }
 
-        /* Карточка клуба (детали) */
         .club-detail-photo {
             width: 100%;
             height: 180px;
@@ -247,8 +240,13 @@
             justify-content: space-between;
             cursor: pointer;
             transition: 0.2s;
+            border: 1px solid transparent;
         }
         .package-item:hover { background: #222240; }
+        .package-item.selected {
+            border-color: #00f0ff;
+            background: #00f0ff11;
+        }
         .btn-book {
             display: block;
             width: 100%;
@@ -264,8 +262,241 @@
             transition: 0.2s;
         }
         .btn-book:hover { opacity: 0.9; }
+        .btn-book:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
 
-        /* Нижняя навигация */
+        .booking-section {
+            background: #12121f;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #1f1f2e;
+            margin-bottom: 12px;
+        }
+        .booking-section h3 {
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #aaa;
+        }
+        .date-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        .date-item {
+            min-width: 60px;
+            padding: 10px 8px;
+            background: #1a1a2e;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+        .date-item.active {
+            border-color: #00f0ff;
+            background: #00f0ff11;
+        }
+        .date-item .day { font-size: 12px; color: #999; }
+        .date-item .date { font-size: 16px; font-weight: 700; }
+        .date-item .month { font-size: 11px; color: #999; }
+        .time-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .time-item {
+            padding: 8px 14px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+        .time-item.active {
+            border-color: #00f0ff;
+            background: #00f0ff11;
+            color: #00f0ff;
+        }
+        .time-item.blocked {
+            opacity: 0.3;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+        .duration-select {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .duration-item {
+            padding: 8px 16px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+        .duration-item.active {
+            border-color: #00f0ff;
+            background: #00f0ff11;
+            color: #00f0ff;
+        }
+        .computer-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .computer-item {
+            aspect-ratio: 1;
+            background: #1a1a2e;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            border: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .computer-item.available { border-color: #4cff4c44; }
+        .computer-item.available:hover { border-color: #4cff4c; }
+        .computer-item.selected {
+            border-color: #00f0ff;
+            background: #00f0ff22;
+            color: #00f0ff;
+        }
+        .computer-item.occupied {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: #ff4c4c44;
+        }
+        .booking-summary {
+            background: #12121f;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #1f1f2e;
+            margin-top: 12px;
+        }
+        .booking-summary h3 { margin-bottom: 8px; }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 14px;
+        }
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #00f0ff;
+            border-top: 1px solid #1f1f2e;
+            margin-top: 8px;
+        }
+        .game-input {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a2e;
+            border: 1px solid #2a2a4a;
+            border-radius: 8px;
+            color: white;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .game-input::placeholder { color: #666; }
+
+        .auth-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .auth-container .logo-large {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #00f0ff, #b300ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 24px;
+        }
+        .auth-container h2 { margin-bottom: 8px; font-size: 20px; }
+        .auth-container p { color: #888; margin-bottom: 24px; text-align: center; }
+        .auth-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #1a1a2e;
+            border: 1px solid #2a2a4a;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+        .auth-input:focus { outline: none; border-color: #00f0ff; }
+        .auth-input::placeholder { color: #666; }
+        .auth-error { color: #ff4c4c; font-size: 13px; margin-bottom: 8px; display: none; }
+        .auth-switch { color: #888; margin-top: 16px; font-size: 14px; }
+        .auth-switch span { color: #00f0ff; cursor: pointer; font-weight: 600; }
+
+        .profile-header { text-align: center; padding: 24px 0; }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #00f0ff, #b300ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 12px;
+        }
+        .profile-name { font-size: 22px; font-weight: 700; }
+        .profile-phone { color: #999; font-size: 14px; }
+        .profile-section {
+            background: #12121f;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #1f1f2e;
+            margin-bottom: 12px;
+        }
+        .profile-section h3 { margin-bottom: 12px; font-size: 15px; color: #aaa; }
+        .profile-menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #1f1f2e;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .profile-menu-item:last-child { border-bottom: none; }
+        .profile-menu-item .arrow { color: #666; }
+        .btn-logout {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            border: 1px solid #ff4c4c44;
+            border-radius: 12px;
+            color: #ff4c4c;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: 0.2s;
+        }
+        .btn-logout:hover { background: #ff4c4c11; }
+
         .bottom-nav {
             position: absolute;
             bottom: 0;
@@ -290,18 +521,9 @@
         .nav-item.active { color: #00f0ff; }
         .nav-item span { font-size: 20px; margin-bottom: 2px; }
 
-        /* Утилиты */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        .screen {
-            display: none;
-        }
-        .screen.active {
-            display: block;
-        }
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .screen { display: none; }
+        .screen.active { display: block; }
         .map-placeholder {
             display: none;
             height: 200px;
@@ -312,6 +534,9 @@
             color: #666;
             margin-bottom: 16px;
         }
+        .success-animation { text-align: center; padding: 40px 20px; }
+        .success-animation .icon { font-size: 64px; margin-bottom: 16px; }
+        .success-animation h2 { color: #4cff4c; margin-bottom: 8px; }
 
         .content::-webkit-scrollbar { width: 4px; }
         .content::-webkit-scrollbar-track { background: transparent; }
@@ -320,7 +545,6 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Шапка -->
         <div class="header">
             <div class="header-left">
                 <span class="back-btn" id="backBtn" onclick="goBack()">←</span>
@@ -330,18 +554,16 @@
             <div class="header-icons">
                 <span>🔔</span>
                 <span>⚙️</span>
-                <span>👤</span>
+                <span onclick="navigateTo('profile')" style="cursor:pointer;">👤</span>
             </div>
         </div>
 
-        <!-- Контент -->
         <div class="content" id="contentArea">
-            <!-- ЭКРАН: Главная -->
             <div id="screen-home" class="screen active">
-                <div class="balance-widget" onclick="alert('История бонусов')">
+                <div class="balance-widget" onclick="navigateTo('profile')">
                     <div>
                         <div class="balance-label">💰 Бонусный баланс</div>
-                        <div class="balance-amount">12 500 бонусов</div>
+                        <div class="balance-amount" id="homeBalance">0 бонусов</div>
                     </div>
                     <span style="font-size:20px;">›</span>
                 </div>
@@ -359,243 +581,450 @@
                 </div>
             </div>
 
-            <!-- ЭКРАН: Карточка клуба -->
             <div id="screen-club" class="screen">
                 <div id="clubDetailContent">
                     <div class="loading">🔄 Загрузка...</div>
                 </div>
             </div>
 
-            <!-- ЭКРАН: Бронирования -->
-            <div id="screen-bookings" class="screen">
-                <div class="loading">📅 Мои брони (скоро)</div>
+            <div id="screen-booking" class="screen">
+                <div id="bookingContent">
+                    <div class="loading">🔄 Загрузка...</div>
+                </div>
             </div>
 
-            <!-- ЭКРАН: Профиль -->
+            <div id="screen-success" class="screen">
+                <div class="success-animation">
+                    <div class="icon">✅</div>
+                    <h2>Бронь подтверждена!</h2>
+                    <p style="color:#aaa;" id="successDetails"></p>
+                    <button class="btn-book" style="margin-top:20px;" onclick="navigateTo('home')">🏠 На главную</button>
+                </div>
+            </div>
+
+            <div id="screen-auth" class="screen">
+                <div class="auth-container">
+                    <div class="logo-large">DSAM</div>
+                    <h2 id="authTitle">Регистрация</h2>
+                    <p id="authSubtitle">Введите данные для бронирования</p>
+                    <input type="text" class="auth-input" id="authName" placeholder="Ваше имя">
+                    <input type="tel" class="auth-input" id="authPhone" placeholder="+998 XX XXX XX XX">
+                    <div class="auth-error" id="authError">Ошибка</div>
+                    <button class="btn-book" onclick="handleAuth()" id="authBtn">Зарегистрироваться</button>
+                    <div class="auth-switch" id="authSwitch">
+                        Уже есть аккаунт? <span onclick="toggleAuthMode()">Войти</span>
+                    </div>
+                </div>
+            </div>
+
             <div id="screen-profile" class="screen">
-                <div class="loading">👤 Профиль (скоро)</div>
+                <div id="profileContent">
+                    <div class="loading">🔄 Загрузка...</div>
+                </div>
+            </div>
+
+            <div id="screen-bookings" class="screen">
+                <div class="loading">🔄 Загрузка броней...</div>
             </div>
         </div>
 
-        <!-- Нижняя навигация -->
         <div class="bottom-nav" id="bottomNav">
             <div class="nav-item active" data-screen="home" onclick="navigateTo('home')">
-                <span>🏠</span>
-                Главная
+                <span>🏠</span>Главная
             </div>
             <div class="nav-item" data-screen="bookings" onclick="navigateTo('bookings')">
-                <span>📅</span>
-                Брони
+                <span>📅</span>Брони
             </div>
             <div class="nav-item" data-screen="profile" onclick="navigateTo('profile')">
-                <span>👤</span>
-                Профиль
+                <span>👤</span>Профиль
             </div>
         </div>
     </div>
 
     <script>
-        // ==================== API ====================
         const API_BASE = 'https://script.google.com/macros/s/AKfycbyKOuZ7iu77ZZYFQURDcw-v0E64xF_hwhi-JO8vI8fdz1EsBG2nDH_e4qnd0m97FrA/exec';
-        
-        // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+
         let currentScreen = 'home';
         let screenHistory = ['home'];
         let currentClubId = null;
-        let allClubs = []; // Кэш для поиска
+        let allClubs = [];
+        let currentPlayer = null;
+        let authMode = 'register';
+        let bookingState = {
+            clubId: null, hallId: null, date: null, time: null,
+            duration: 1, computerId: null, game: '',
+            pricePerHour: 0, totalPrice: 0, packageSelected: null
+        };
 
-        // ==================== НАВИГАЦИЯ ====================
-        function navigateTo(screen, clubId = null) {
+        function checkAuth() {
+            const saved = localStorage.getItem('dsam_player');
+            if (saved) { currentPlayer = JSON.parse(saved); updateBalanceDisplay(); return true; }
+            return false;
+        }
+        function savePlayer(player) {
+            currentPlayer = player;
+            localStorage.setItem('dsam_player', JSON.stringify(player));
+            updateBalanceDisplay();
+        }
+        function logoutPlayer() {
+            currentPlayer = null;
+            localStorage.removeItem('dsam_player');
+            updateBalanceDisplay();
+            navigateTo('home');
+        }
+        function updateBalanceDisplay() {
+            const balance = currentPlayer ? currentPlayer.bonus_balance : 0;
+            const el = document.getElementById('homeBalance');
+            if (el) el.textContent = (balance || 0).toLocaleString() + ' бонусов';
+        }
+
+        function navigateTo(screen, params = null) {
+            const protectedScreens = ['profile', 'bookings'];
+            if (protectedScreens.includes(screen) && !checkAuth()) {
+                screenHistory.push(screen);
+                showAuthScreen();
+                return;
+            }
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen-' + screen).classList.add('active');
-
-            if (screen !== currentScreen) {
-                screenHistory.push(screen);
-                currentScreen = screen;
-            }
-
+            if (screen !== currentScreen) { screenHistory.push(screen); currentScreen = screen; }
             const backBtn = document.getElementById('backBtn');
             const logo = document.getElementById('headerLogo');
             const title = document.getElementById('screenTitle');
             const bottomNav = document.getElementById('bottomNav');
-
-            if (screen === 'home') {
-                backBtn.style.display = 'none';
-                logo.style.display = 'inline';
-                title.style.display = 'none';
-                bottomNav.style.display = 'flex';
-                screenHistory = ['home'];
+            if (screen === 'home' || screen === 'auth') {
+                backBtn.style.display = 'none'; logo.style.display = 'inline';
+                title.style.display = 'none'; bottomNav.style.display = screen === 'home' ? 'flex' : 'none';
+                if (screen === 'home') screenHistory = ['home'];
             } else {
-                backBtn.style.display = 'inline';
-                logo.style.display = 'none';
-                title.style.display = 'inline';
-                bottomNav.style.display = 'none';
+                backBtn.style.display = 'inline'; logo.style.display = 'none';
+                title.style.display = 'inline'; bottomNav.style.display = 'none';
             }
-
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.screen === screen);
-            });
-
-            if (screen === 'club' && clubId) {
-                currentClubId = clubId;
-                title.textContent = 'Загрузка...';
-                loadClubDetail(clubId);
-            } else if (screen === 'home') {
-                loadClubs();
-            }
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.screen === screen));
+            if (screen === 'club' && params) { currentClubId = params; title.textContent = 'Загрузка...'; loadClubDetail(params); }
+            else if (screen === 'booking' && params) { title.textContent = 'Бронирование'; loadBookingScreen(params.clubId, params.hallId, params.pricePerHour); }
+            else if (screen === 'profile') { title.textContent = 'Профиль'; renderProfile(); }
+            else if (screen === 'bookings') { title.textContent = 'Мои брони'; loadMyBookings(); }
+            else if (screen === 'home') { loadClubs(); }
         }
 
         function goBack() {
             if (screenHistory.length > 1) {
                 screenHistory.pop();
-                const prevScreen = screenHistory[screenHistory.length - 1];
-                navigateTo(prevScreen);
+                const prev = screenHistory[screenHistory.length - 1];
+                if (prev === 'club') navigateTo('club', currentClubId);
+                else navigateTo(prev);
             }
         }
-
-        // ==================== ПЕРЕКЛЮЧАТЕЛЬ КАРТА/СПИСОК ====================
         function switchView(view) {
             document.getElementById('mapView').style.display = view === 'map' ? 'flex' : 'none';
             document.getElementById('clubsContainer').style.display = view === 'list' ? 'flex' : 'none';
             document.getElementById('btnMap').classList.toggle('active', view === 'map');
             document.getElementById('btnList').classList.toggle('active', view === 'list');
         }
-
-        // ==================== ПОИСК ====================
         function filterClubs() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allClubs.filter(club =>
-                club.name.toLowerCase().includes(query) ||
-                club.address.toLowerCase().includes(query)
-            );
-            renderClubs(filtered);
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            renderClubs(allClubs.filter(c => c.name.toLowerCase().includes(q) || c.address.toLowerCase().includes(q)));
         }
 
-        // ==================== ЗАГРУЗКА КЛУБОВ ====================
-        async function loadClubs() {
-            const container = document.getElementById('clubsContainer');
-            container.innerHTML = '<div class="loading">🔄 Загрузка клубов...</div>';
-            try {
-                const response = await fetch(API_BASE);
-                const clubs = await response.json();
-                allClubs = clubs; // Кэшируем для поиска
-                renderClubs(clubs);
-            } catch (err) {
-                console.error('Ошибка загрузки:', err);
-                container.innerHTML = '<div class="loading">❌ Не удалось загрузить клубы</div>';
+        function showAuthScreen() {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-auth').classList.add('active');
+            document.getElementById('backBtn').style.display = 'none';
+            document.getElementById('headerLogo').style.display = 'inline';
+            document.getElementById('screenTitle').style.display = 'none';
+            document.getElementById('bottomNav').style.display = 'none';
+            currentScreen = 'auth'; updateAuthUI();
+        }
+        function toggleAuthMode() { authMode = authMode === 'register' ? 'login' : 'register'; updateAuthUI(); }
+        function updateAuthUI() {
+            document.getElementById('authError').style.display = 'none';
+            if (authMode === 'register') {
+                document.getElementById('authTitle').textContent = 'Регистрация';
+                document.getElementById('authSubtitle').textContent = 'Введите данные для бронирования';
+                document.getElementById('authName').style.display = 'block';
+                document.getElementById('authBtn').textContent = 'Зарегистрироваться';
+                document.getElementById('authSwitch').innerHTML = 'Уже есть аккаунт? <span onclick="toggleAuthMode()">Войти</span>';
+            } else {
+                document.getElementById('authTitle').textContent = 'Вход';
+                document.getElementById('authSubtitle').textContent = 'Введите номер телефона';
+                document.getElementById('authName').style.display = 'none';
+                document.getElementById('authBtn').textContent = 'Войти';
+                document.getElementById('authSwitch').innerHTML = 'Нет аккаунта? <span onclick="toggleAuthMode()">Зарегистрироваться</span>';
             }
         }
-
-        function renderClubs(clubs) {
-            const container = document.getElementById('clubsContainer');
-            if (clubs.length === 0) {
-                container.innerHTML = '<div class="loading">😕 Клубы не найдены</div>';
-                return;
-            }
-            container.innerHTML = '';
-            clubs.forEach(club => {
-                const statusClass = club.freeNow > 0 ? 'status-open' : 'status-closed';
-                const statusEmoji = club.freeNow > 0 ? '🟢' : '🔴';
-                const statusText = club.freeNow > 0 ? 'Открыто' : 'Нет свободных';
-                const freeText = club.total > 0 ? `${club.freeNow} из ${club.total} свободно` : 'Нет данных';
-
-                const card = document.createElement('div');
-                card.className = 'club-card';
-                card.onclick = () => navigateTo('club', club.id);
-                card.innerHTML = `
-                    <div class="club-header">
-                        <div class="club-name">${club.name}</div>
-                        <div class="club-rating">⭐ ${club.rating.toFixed(1)}</div>
-                    </div>
-                    <div class="club-address">📍 ${club.address}</div>
-                    <div class="club-status">
-                        <span class="${statusClass}">${statusEmoji} ${statusText}</span>
-                    </div>
-                    <div style="font-size:13px; color:#aaa;">${statusEmoji} ${freeText}</div>
-                    <div class="club-price">от ${club.minPrice.toLocaleString()} сум/час</div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // ==================== ЗАГРУЗКА ДЕТАЛЕЙ КЛУБА ====================
-        async function loadClubDetail(clubId) {
-            const container = document.getElementById('clubDetailContent');
-            container.innerHTML = '<div class="loading">🔄 Загрузка...</div>';
-
+        async function handleAuth() {
+            const name = document.getElementById('authName').value.trim();
+            const phone = document.getElementById('authPhone').value.trim();
+            const errEl = document.getElementById('authError');
+            errEl.style.display = 'none';
+            if (!phone) { errEl.textContent = 'Введите номер телефона'; errEl.style.display = 'block'; return; }
+            if (authMode === 'register' && !name) { errEl.textContent = 'Введите имя'; errEl.style.display = 'block'; return; }
+            const btn = document.getElementById('authBtn');
+            btn.textContent = 'Загрузка...'; btn.disabled = true;
             try {
-                const response = await fetch(API_BASE + '?club_id=' + clubId);
-                const club = await response.json();
-
-                if (club.error) {
-                    container.innerHTML = '<div class="loading">❌ Клуб не найден</div>';
-                    return;
+                let url = authMode === 'register'
+                    ? API_BASE + '?action=register&name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone)
+                    : API_BASE + '?action=login&phone=' + encodeURIComponent(phone);
+                const resp = await fetch(url); const data = await resp.json();
+                if (data.error) {
+                    errEl.textContent = data.error === 'Player not found' ? 'Аккаунт не найден' : data.error;
+                    errEl.style.display = 'block';
+                } else {
+                    savePlayer(data);
+                    const target = screenHistory.length > 1 ? screenHistory[screenHistory.length - 2] : 'home';
+                    navigateTo(['profile', 'bookings'].includes(target) ? target : 'home');
                 }
-
-                document.getElementById('screenTitle').textContent = club.name;
-                renderClubDetail(club);
-            } catch (err) {
-                console.error('Ошибка:', err);
-                container.innerHTML = '<div class="loading">❌ Ошибка загрузки</div>';
-            }
+            } catch(e) { errEl.textContent = 'Ошибка соединения'; errEl.style.display = 'block'; }
+            btn.textContent = authMode === 'register' ? 'Зарегистрироваться' : 'Войти';
+            btn.disabled = false;
         }
 
-        function renderClubDetail(club) {
-            const container = document.getElementById('clubDetailContent');
-
-            let hallsHTML = club.halls.map((hall, i) => `
-                <div class="hall-tab ${i === 0 ? 'active' : ''}" onclick="switchHall(${i})">${hall.name}</div>
-            `).join('');
-
-            let hallDetailHTML = club.halls.map((hall, i) => `
-                <div class="hall-detail" id="hall-${i}" style="${i !== 0 ? 'display:none' : ''}">
-                    <h4>${hall.name}</h4>
-                    <div class="hall-specs">🖥 ${hall.specs}</div>
-                    <div style="color:#4cff4c; margin:8px 0;">
-                        🟢 Свободно: ${hall.free_now} из ${hall.total_computers}
-                    </div>
-                    <div style="font-size:18px; font-weight:700; color:#00f0ff;">
-                        ${hall.base_price_hour.toLocaleString()} сум/час
-                    </div>
-                    ${hall.packages.length > 0 ? `
-                        <div class="package-list">
-                            ${hall.packages.map(p => `
-                                <div class="package-item">
-                                    <span>🎮 ${p}</span>
-                                    <span>›</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                    <button class="btn-book" onclick="alert('Бронирование (скоро)')">
-                        💰 Забронировать
-                    </button>
+        function renderProfile() {
+            if (!currentPlayer) { showAuthScreen(); return; }
+            document.getElementById('profileContent').innerHTML = `
+                <div class="profile-header">
+                    <div class="profile-avatar">👤</div>
+                    <div class="profile-name">${currentPlayer.name}</div>
+                    <div class="profile-phone">${currentPlayer.phone}</div>
                 </div>
-            `).join('');
-
-            container.innerHTML = `
-                <div class="club-detail-photo">
-                    ${club.photo_url ? `<img src="${club.photo_url}" alt="${club.name}">` : '🖥️'}
+                <div class="profile-section">
+                    <h3>💰 Бонусный баланс</h3>
+                    <div style="font-size:28px;font-weight:700;color:#00f0ff;">${(currentPlayer.bonus_balance||0).toLocaleString()} бонусов</div>
                 </div>
-                <div class="club-detail-info">
-                    <div>⭐ Рейтинг: ${club.rating.toFixed(1)}</div>
-                    <div>📍 ${club.address}</div>
-                    <div>🕐 ${club.working_hours || '09:00 – 02:00'}</div>
-                    <div>📞 ${club.phone || 'Нет данных'}</div>
+                <div class="profile-section">
+                    <h3>Настройки</h3>
+                    <div class="profile-menu-item" onclick="alert('Скоро')">🌐 Язык <span class="arrow">Русский ›</span></div>
+                    <div class="profile-menu-item" onclick="alert('Скоро')">🔔 Уведомления <span class="arrow">Вкл ›</span></div>
+                    <div class="profile-menu-item" onclick="alert('Скоро')">📋 История бонусов <span class="arrow">›</span></div>
                 </div>
-                <div class="hall-tabs">${hallsHTML}</div>
-                ${hallDetailHTML}
+                <button class="btn-logout" onclick="logoutPlayer()">🚪 Выйти</button>
             `;
         }
 
-        function switchHall(index) {
-            document.querySelectorAll('.hall-tab').forEach((tab, i) => tab.classList.toggle('active', i === index));
-            document.querySelectorAll('.hall-detail').forEach((detail, i) => detail.style.display = i === index ? 'block' : 'none');
+        async function loadClubs() {
+            const c = document.getElementById('clubsContainer');
+            c.innerHTML = '<div class="loading">🔄 Загрузка клубов...</div>';
+            try { const r = await fetch(API_BASE); allClubs = await r.json(); renderClubs(allClubs); }
+            catch(e) { c.innerHTML = '<div class="loading">❌ Не удалось загрузить клубы</div>'; }
+        }
+        function renderClubs(clubs) {
+            const c = document.getElementById('clubsContainer');
+            if (!clubs.length) { c.innerHTML = '<div class="loading">😕 Клубы не найдены</div>'; return; }
+            c.innerHTML = clubs.map(club => `
+                <div class="club-card" onclick="navigateTo('club',${club.id})">
+                    <div class="club-header"><div class="club-name">${club.name}</div><div class="club-rating">⭐ ${club.rating.toFixed(1)}</div></div>
+                    <div class="club-address">📍 ${club.address}</div>
+                    <div class="club-status"><span class="${club.freeNow>0?'status-open':'status-closed'}">${club.freeNow>0?'🟢 Открыто':'🔴 Нет свободных'}</span></div>
+                    <div style="font-size:13px;color:#aaa;">${club.total>0?club.freeNow+' из '+club.total+' свободно':'Нет данных'}</div>
+                    <div class="club-price">от ${club.minPrice.toLocaleString()} сум/час</div>
+                </div>
+            `).join('');
         }
 
-        // ==================== СТАРТ ====================
-        document.getElementById('mapView').style.display = 'none';
-        loadClubs();
+        async function loadClubDetail(clubId) {
+            const c = document.getElementById('clubDetailContent');
+            c.innerHTML = '<div class="loading">🔄 Загрузка...</div>';
+            try {
+                const r = await fetch(API_BASE+'?club_id='+clubId); const club = await r.json();
+                if (club.error) { c.innerHTML = '<div class="loading">❌ Клуб не найден</div>'; return; }
+                document.getElementById('screenTitle').textContent = club.name;
+                renderClubDetail(club);
+            } catch(e) {
+                const club = allClubs.find(x=>x.id===clubId);
+                if (club) { document.getElementById('screenTitle').textContent=club.name; renderClubDetail({...club,working_hours:'09:00–02:00',halls:[{id:1,name:'VIP',base_price_hour:25000,specs:'RTX4070',total_computers:10,free_now:3,packages:[]},{id:2,name:'Стандарт',base_price_hour:15000,specs:'RTX3060',total_computers:10,free_now:5,packages:[]}]}); }
+                else c.innerHTML = '<div class="loading">❌ Ошибка загрузки</div>';
+            }
+        }
+        function renderClubDetail(club) {
+            document.getElementById('clubDetailContent').innerHTML = `
+                <div class="club-detail-photo">${club.photo_url?`<img src="${club.photo_url}">`:'🖥️'}</div>
+                <div class="club-detail-info">
+                    <div>⭐ Рейтинг: ${club.rating.toFixed(1)}</div><div>📍 ${club.address}</div>
+                    <div>🕐 ${club.working_hours||'09:00–02:00'}</div><div>📞 ${club.phone||'Нет данных'}</div>
+                </div>
+                <div class="hall-tabs">${club.halls.map((h,i)=>`<div class="hall-tab ${i===0?'active':''}" onclick="switchHall(${i})">${h.name}</div>`).join('')}</div>
+                ${club.halls.map((h,i)=>`
+                    <div class="hall-detail" id="hall-${i}" style="${i!==0?'display:none':''}">
+                        <h4>${h.name}</h4><div class="hall-specs">🖥 ${h.specs}</div>
+                        <div style="color:#4cff4c;margin:8px 0;">🟢 Свободно: ${h.free_now} из ${h.total_computers}</div>
+                        <div style="font-size:18px;font-weight:700;color:#00f0ff;">${h.base_price_hour.toLocaleString()} сум/час</div>
+                        ${h.packages&&h.packages.length?`<div class="package-list">${h.packages.map(p=>`<div class="package-item"><span>🎮 ${p}</span><span>›</span></div>`).join('')}</div>`:''}
+                        <button class="btn-book" onclick="startBooking(${club.id},${h.id},${h.base_price_hour})">💰 Забронировать</button>
+                    </div>
+                `).join('')}
+            `;
+        }
+        function switchHall(i) {
+            document.querySelectorAll('.hall-tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+            document.querySelectorAll('.hall-detail').forEach((d,j)=>d.style.display=j===i?'block':'none');
+        }
+
+        function startBooking(clubId, hallId, pricePerHour) {
+            if (!checkAuth()) { showAuthScreen(); return; }
+            bookingState = { clubId, hallId, date: new Date(), time: null, duration: 1, computerId: null, game: '', pricePerHour, totalPrice: pricePerHour, packageSelected: null };
+            currentClubId = clubId;
+            document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+            document.getElementById('screen-booking').classList.add('active');
+            document.getElementById('backBtn').style.display='inline';
+            document.getElementById('headerLogo').style.display='none';
+            document.getElementById('screenTitle').style.display='inline';
+            document.getElementById('screenTitle').textContent='Бронирование';
+            document.getElementById('bottomNav').style.display='none';
+            screenHistory.push('booking'); currentScreen='booking';
+            loadBookingScreen(clubId, hallId, pricePerHour);
+        }
+        function loadBookingScreen(clubId, hallId, pricePerHour) {
+            let club = allClubs.find(c=>c.id===clubId)||{id:clubId,name:'Клуб',halls:[]};
+            let hall = (club.halls||[]).find(h=>h.id===hallId)||{id:hallId,name:'Зал',base_price_hour:pricePerHour||15000,specs:'',total_computers:10,free_now:5,packages:[]};
+            const dates=[];
+            for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()+i);dates.push(d);}
+            const slots=[];
+            for(let h=9;h<26;h++){const hr=h%24;slots.push(`${hr.toString().padStart(2,'0')}:00`,`${hr.toString().padStart(2,'0')}:30`);}
+            const comps=[];
+            for(let i=1;i<=(hall.total_computers||10);i++)comps.push({id:i,number:i,occupied:i>(hall.free_now||5)});
+            bookingState.date=dates[0]; bookingState.computers=comps;
+            bookingState.pricePerHour=hall.base_price_hour||pricePerHour;
+            bookingState.totalPrice=bookingState.pricePerHour;
+            renderBookingScreen(club,hall,dates,slots,comps);
+        }
+        function renderBookingScreen(club,hall,dates,slots,comps){
+            const m=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+            const dn=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+            document.getElementById('bookingContent').innerHTML=`
+                <div style="margin-bottom:8px;color:#aaa;font-size:13px;">${club.name} · ${hall.name} · ${hall.base_price_hour.toLocaleString()} сум/час</div>
+                ${hall.packages&&hall.packages.length?`<div class="booking-section"><h3>🎮 Пакеты клуба</h3><div class="package-list">${hall.packages.map(p=>`<div class="package-item" onclick="selectPackage('${p.replace(/'/g,"\\'")}')"><span>${p}</span><span>›</span></div>`).join('')}</div></div>`:''}
+                <div class="booking-section"><h3>📅 Дата</h3><div class="date-scroll">${dates.map((d,i)=>`<div class="date-item ${i===0?'active':''}" onclick="selectDate(${i})" data-date-index="${i}"><div class="day">${i===0?'Сегодня':i===1?'Завтра':dn[d.getDay()]}</div><div class="date">${d.getDate()}</div><div class="month">${m[d.getMonth()]}</div></div>`).join('')}</div></div>
+                <div class="booking-section"><h3>⏰ Время начала</h3><div class="time-scroll">${slots.map(t=>`<div class="time-item" onclick="selectTime('${t}')" data-time="${t}">${t}</div>`).join('')}</div></div>
+                <div class="booking-section"><h3>⏱ Длительность</h3><div class="duration-select">
+                    <div class="duration-item active" onclick="selectDuration(1)" data-dur="1">1 час</div>
+                    <div class="duration-item" onclick="selectDuration(2)" data-dur="2">2 часа</div>
+                    <div class="duration-item" onclick="selectDuration(3)" data-dur="3">3 часа</div>
+                    <div class="duration-item" onclick="selectDuration(5)" data-dur="5">5 часов</div>
+                </div></div>
+                <div class="booking-section"><h3>💻 Выберите компьютер</h3><div class="computer-grid">${comps.map(c=>`<div class="computer-item ${c.occupied?'occupied':'available'}" onclick="${c.occupied?'':`selectComputer(${c.id})`}" data-computer-id="${c.id}">${c.number}</div>`).join('')}</div></div>
+                <div class="booking-section"><h3>🎮 Какую игру хотите сыграть?</h3><input type="text" class="game-input" placeholder="CS2, Dota 2, FIFA..." oninput="bookingState.game=this.value"></div>
+                <div class="booking-summary" id="bookingSummary">
+                    <h3>📋 Детали брони</h3>
+                    <div class="summary-row"><span>Клуб:</span><span>${club.name}</span></div>
+                    <div class="summary-row"><span>Зал:</span><span>${hall.name}</span></div>
+                    <div class="summary-row" id="summaryDate"><span>Дата:</span><span>—</span></div>
+                    <div class="summary-row" id="summaryTime"><span>Время:</span><span>—</span></div>
+                    <div class="summary-row" id="summaryDuration"><span>Длительность:</span><span>—</span></div>
+                    <div class="summary-row" id="summaryComputer"><span>Компьютер:</span><span>—</span></div>
+                    <div class="summary-total" id="summaryTotal"><span>Итого:</span><span>${hall.base_price_hour.toLocaleString()} сум</span></div>
+                </div>
+                <button class="btn-book" id="btnPay" disabled onclick="processPayment()">💰 Оплатить через Click</button>
+            `;
+            updateBookingSummary();
+        }
+        function selectDate(i){
+            document.querySelectorAll('.date-item').forEach(e=>e.classList.remove('active'));
+            document.querySelector(`[data-date-index="${i}"]`).classList.add('active');
+            const d=new Date();d.setDate(d.getDate()+i);bookingState.date=d;updateBookingSummary();
+        }
+        function selectTime(t){
+            document.querySelectorAll('.time-item').forEach(e=>e.classList.remove('active'));
+            const el=document.querySelector(`[data-time="${t}"]`);if(el)el.classList.add('active');
+            bookingState.time=t;updateBookingSummary();
+        }
+        function selectDuration(h){
+            document.querySelectorAll('.duration-item').forEach(e=>e.classList.remove('active'));
+            document.querySelector(`[data-dur="${h}"]`).classList.add('active');
+            bookingState.duration=h;bookingState.totalPrice=bookingState.pricePerHour*h;
+            bookingState.packageSelected=null;
+            document.querySelectorAll('.package-item').forEach(e=>e.classList.remove('selected'));
+            updateBookingSummary();
+        }
+        function selectPackage(p){
+            document.querySelectorAll('.package-item').forEach(e=>e.classList.remove('selected'));
+            event.target.closest('.package-item').classList.add('selected');
+            bookingState.packageSelected=p;
+            document.querySelectorAll('.duration-item').forEach(e=>e.classList.remove('active'));
+            bookingState.duration=1;bookingState.totalPrice=bookingState.pricePerHour;
+            updateBookingSummary();
+        }
+        function selectComputer(id){
+            document.querySelectorAll('.computer-item').forEach(e=>e.classList.remove('selected'));
+            document.querySelector(`[data-computer-id="${id}"]`).classList.add('selected');
+            bookingState.computerId=id;updateBookingSummary();
+        }
+        function updateBookingSummary(){
+            const ds=bookingState.date?bookingState.date.toLocaleDateString('ru-RU',{day:'numeric',month:'long'}):'—';
+            const ts=bookingState.time||'—';
+            const dur=bookingState.packageSelected||`${bookingState.duration} час(а)`;
+            const cs=bookingState.computerId?`№${bookingState.computerId}`:'—';
+            const total=bookingState.totalPrice.toLocaleString()+' сум';
+            const set=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v;};
+            set('summaryDate',`<span>Дата:</span><span>${ds}</span>`);
+            set('summaryTime',`<span>Время:</span><span>${ts}</span>`);
+            set('summaryDuration',`<span>Длительность:</span><span>${dur}</span>`);
+            set('summaryComputer',`<span>Компьютер:</span><span>${cs}</span>`);
+            set('summaryTotal',`<span>Итого:</span><span>${total}</span>`);
+            const btn=document.getElementById('btnPay');
+            if(btn)btn.disabled=!(bookingState.time&&bookingState.computerId);
+        }
+        async function processPayment(){
+            if(!currentPlayer){alert('Необходимо авторизоваться');return;}
+            const btn=document.getElementById('btnPay');
+            btn.textContent='Создание брони...';btn.disabled=true;
+            try{
+                const d=new Date(bookingState.date);
+                const [h,m]=(bookingState.time||'00:00').split(':');
+                d.setHours(parseInt(h),parseInt(m),0,0);
+                const url=API_BASE+'?action=create_booking&player_phone='+encodeURIComponent(currentPlayer.phone)+'&computer_id='+bookingState.computerId+'&start_time='+d.toISOString()+'&hours='+bookingState.duration+'&game='+encodeURIComponent(bookingState.game)+'&payment_method=click';
+                const r=await fetch(url);const data=await r.json();
+                if(data.success){
+                    document.getElementById('successDetails').textContent=`Бронь на ${d.toLocaleDateString('ru-RU')}, ${bookingState.time}, комп №${bookingState.computerId}\nСумма: ${bookingState.totalPrice.toLocaleString()} сум`;
+                    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+                    document.getElementById('screen-success').classList.add('active');
+                    document.getElementById('backBtn').style.display='inline';
+                    document.getElementById('headerLogo').style.display='none';
+                    document.getElementById('screenTitle').style.display='inline';
+                    document.getElementById('screenTitle').textContent='Бронь';
+                    document.getElementById('bottomNav').style.display='none';
+                }else{alert('Ошибка: '+(data.error||'Неизвестная ошибка'));}
+            }catch(e){alert('Ошибка соединения');}
+            btn.textContent='💰 Оплатить через Click';btn.disabled=false;
+        }
+
+        async function loadMyBookings(){
+            if(!currentPlayer){showAuthScreen();return;}
+            const c=document.getElementById('screen-bookings');
+            c.innerHTML='<div class="loading">🔄 Загрузка броней...</div>';
+            try{
+                const r=await fetch(API_BASE+'?action=my_bookings&player_phone='+encodeURIComponent(currentPlayer.phone));
+                const bookings=await r.json();
+                renderBookings(bookings);
+            }catch(e){c.innerHTML='<div class="loading">❌ Ошибка загрузки</div>';}
+        }
+        function renderBookings(bookings){
+            const c=document.getElementById('screen-bookings');
+            if(!bookings.length){
+                c.innerHTML=`<div style="text-align:center;padding:40px 20px;"><div style="font-size:48px;margin-bottom:16px;">📅</div><h3>Нет броней</h3><p style="color:#888;margin-top:8px;">Забронируйте компьютер в любимом клубе</p><button class="btn-book" style="margin-top:20px;" onclick="navigateTo('home')">🏠 На главную</button></div>`;
+                return;
+            }
+            const sm={upcoming:{emoji:'🟢',label:'Предстоит',color:'#4cff4c'},active:{emoji:'🟡',label:'Активна',color:'#ffcc00'},completed:{emoji:'✅',label:'Завершена',color:'#888'},cancelled:{emoji:'❌',label:'Отменена',color:'#ff4c4c'}};
+            c.innerHTML=bookings.map(b=>{
+                const s=sm[b.status]||sm.upcoming;
+                const sd=new Date(b.start_time);
+                const ed=new Date(b.end_time);
+                return `<div class="booking-section" style="cursor:pointer;" onclick="navigateTo('club',${b.club_id})">
+                    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+                        <div><div style="font-weight:700;font-size:15px;">${b.club_name}</div><div style="color:#888;font-size:12px;">${b.hall_name} · Комп №${b.computer_number}</div></div>
+                        <div style="text-align:right;"><span style="color:${s.color};font-size:13px;">${s.emoji} ${s.label}</span></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;color:#aaa;">
+                        <span>📅 ${sd.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})}</span>
+                        <span>⏰ ${sd.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} – ${ed.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} (${b.hours}ч)</span>
+                    </div>
+                    ${b.game?`<div style="margin-top:6px;font-size:12px;color:#888;">🎮 ${b.game}</div>`:''}
+                </div>`;
+            }).join('')+'<button class="btn-book" style="margin-top:12px;" onclick="navigateTo(\'home\')">🏠 На главную</button>';
+        }
+
+        document.getElementById('mapView').style.display='none';
+        checkAuth();updateBalanceDisplay();loadClubs();
     </script>
 </body>
 </html>
