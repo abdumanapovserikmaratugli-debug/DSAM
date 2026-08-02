@@ -61,7 +61,7 @@
                 <select id="clubSelect" style="padding:12px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px;color:white;width:100%;margin-bottom:12px;font-size:15px;">
                     <option value="">Выберите клуб...</option>
                 </select>
-                <input type="tel" id="adminPhone" placeholder="Номер телефона админа">
+                <input type="tel" id="adminPhone" placeholder="+998 XX XXX XX XX" oninput="formatPhoneInput(this)" maxlength="17">
                 <button class="btn" onclick="login()">Войти</button>
                 <div style="color:#ff4c4c;margin-top:8px;display:none;" id="loginError"></div>
             </div>
@@ -98,7 +98,7 @@
                 <h3>Добавить бронь</h3>
                 <select id="modalComputer" style="padding:10px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px;color:white;width:100%;margin-bottom:10px;font-size:14px;"></select>
                 <input type="text" id="modalName" placeholder="Имя клиента">
-                <input type="tel" id="modalPhone" placeholder="Телефон (необязательно)">
+                <input type="tel" id="modalPhone" placeholder="+998 XX XXX XX XX" oninput="formatPhoneInput(this)" maxlength="17">
                 <input type="datetime-local" id="modalStart" style="color-scheme:dark;">
                 <select id="modalHours" style="padding:10px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px;color:white;width:100%;margin-bottom:10px;font-size:14px;">
                     <option value="1">1 час</option><option value="2">2 часа</option><option value="3">3 часа</option><option value="5">5 часов</option>
@@ -120,6 +120,19 @@
         let computers = [];
         let bookings = [];
 
+        // Маска телефона: приводит ввод к формату +998 XX XXX XX XX
+        function formatPhoneInput(input) {
+            let digits = input.value.replace(/\D/g, '');
+            if (digits.startsWith('998')) digits = digits.slice(3);
+            digits = digits.slice(0, 9);
+            let formatted = '+998';
+            if (digits.length > 0) formatted += ' ' + digits.slice(0, 2);
+            if (digits.length > 2) formatted += ' ' + digits.slice(2, 5);
+            if (digits.length > 5) formatted += ' ' + digits.slice(5, 7);
+            if (digits.length > 7) formatted += ' ' + digits.slice(7, 9);
+            input.value = formatted;
+        }
+
         // Загрузка списка клубов для селекта
         async function loadClubs() {
             try {
@@ -137,10 +150,12 @@
 
         async function login() {
     const clubId = document.getElementById('clubSelect').value;
+    const phone = document.getElementById('adminPhone').value.trim();
     if (!clubId) { showError('Выберите клуб'); return; }
-    
+    if (!phone) { showError('Введите номер телефона'); return; }
+
     try {
-        const url = API_BASE + '?action=admin_login&club_id=' + clubId + '&phone=admin';
+        const url = API_BASE + '?action=admin_login&club_id=' + clubId + '&phone=' + encodeURIComponent(phone);
         console.log('Login URL:', url);
         const r = await fetch(url);
         const data = await r.json();
