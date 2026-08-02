@@ -136,25 +136,31 @@
         }
 
         async function login() {
-            const clubId = document.getElementById('clubSelect').value;
-            const phone = document.getElementById('adminPhone').value.trim();
-            if (!clubId) { showError('Выберите клуб'); return; }
-            
-            try {
-                const r = await fetch(API_BASE + '?action=admin_login&phone=' + encodeURIComponent(phone) + '&club_id=' + clubId);
-                const data = await r.json();
-                if (data.success) {
-                    currentClub = data;
-                    localStorage.setItem('dsam_admin', JSON.stringify(data));
-                    document.getElementById('loginScreen').style.display = 'none';
-                    document.getElementById('mainScreen').style.display = 'block';
-                    document.getElementById('clubName').textContent = data.club_name;
-                    loadDashboard();
-                } else {
-                    showError(data.error || 'Ошибка доступа');
-                }
-            } catch(e) { showError('Ошибка соединения'); }
+    const clubId = document.getElementById('clubSelect').value;
+    if (!clubId) { showError('Выберите клуб'); return; }
+    
+    try {
+        const url = API_BASE + '?action=admin_login&club_id=' + clubId + '&phone=admin';
+        console.log('Login URL:', url);
+        const r = await fetch(url);
+        const data = await r.json();
+        console.log('Login response:', data);
+        
+        if (data.success) {
+            currentClub = data;
+            localStorage.setItem('dsam_admin', JSON.stringify(data));
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainScreen').style.display = 'block';
+            document.getElementById('clubName').textContent = data.club_name;
+            loadDashboard();
+        } else {
+            showError(data.error || 'Ошибка доступа');
         }
+    } catch(e) {
+        console.error('Login error:', e);
+        showError('Ошибка соединения');
+    }
+}
 
         function logout() {
             localStorage.removeItem('dsam_admin');
